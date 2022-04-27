@@ -10,8 +10,9 @@ while(1):
     frame = cv2.resize(frame,dsize=(int(width/2),int(height/2)))
     # バイラテラルフィルタ
     before = frame.copy()
+    frame = cv2.blur(frame,(3,3))
     beforeTime = time.perf_counter()
-    dst = cv2.bilateralFilter(frame, 30, sigmaColor=75, sigmaSpace=75)#sigmaColorは大きくしすぎない
+    dst = cv2.bilateralFilter(frame, 30, sigmaColor=80, sigmaSpace=80)
     afterTime = time.perf_counter()
     cv2.imshow("before",before)
     cv2.imshow("after",dst)
