@@ -2,12 +2,14 @@ import cv2
 import numpy as np
 import adjust
 import time
+import datetime
 adjust = adjust.adjust()
 face_cascade_path = 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(face_cascade_path)
 #smile_cascade_path = 'haarcascade_smile.xml'
 #smile_cascade = cv2.CascadeClassifier(smile_cascade_path)
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 BeautifulSkinFilter = True
@@ -52,5 +54,9 @@ while(1):
             BeautifulSkinFilter = False
         else:
             BeautifulSkinFilter = True
+    elif key == ord('s'):
+        dt_now = datetime.datetime.now()
+        cv2.imwrite(""+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')+".png",frame)
+        
 cv2.destroyAllWindows()
 cap.release()
