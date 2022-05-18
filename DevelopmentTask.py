@@ -6,7 +6,7 @@ face_cascade_path = 'haarcascade_frontalface_default.xml'#顔認識のための�
 face_cascade = cv2.CascadeClassifier(face_cascade_path)
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));#動作の軽量化のためカメラの設定を変更
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 7)#処理落ち軽減のため
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 7)#処理落ち軽減のためバッファを拡張
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 Kf = 30
@@ -18,14 +18,14 @@ ChangeAvatarFrame = False
 ChangeHSVFrame = False
 ChangeMosaicFrame = False
 
-def BeautifulSkinFilter():
+def BeautifulSkinFilter():#顔認識からの各種フィルタ処理を施すメイン関数
     ret,frame = cap.read()
-    frame = cv2.resize(frame,dsize=(int(width/2),int(height/2)))
+    frame = cv2.resize(frame,dsize=(int(width/2),int(height/2)))#処理の軽減のため映像を半分にリサイズ
     before = frame.copy()
     # バイラテラルフィルタ
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
-    if ChangeGrayFrame:
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)#カメラの映像から顔の要素を抽出し，抽出した要素の座標を返す
+    if ChangeGrayFrame:#各種フィルタのフラグを確認
         frame = gray
     elif ChangeBinaryFrame:
         ret2,frame = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU)
@@ -34,19 +34,19 @@ def BeautifulSkinFilter():
     elif ChangeHSVFrame:
         frame = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
     if len(faces) != 0:
-        if ChangeMosaicFrame:
+        if ChangeMosaicFrame:#モザイクフラグが立っていればモザイク処理を施す
             for x,y,w,h in faces:
                 small = cv2.resize(frame[y: y + h, x: x + w], None, fx=ratio, fy=ratio, interpolation=cv2.INTER_NEAREST)
                 frame[y: y + h, x: x + w] = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
         else:
             for x, y, w, h in faces:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                face = frame[y: y + h, x: x + w]
+                face = frame[y: y + h, x: x + w]#全体の画像から顔の部分のみを抽出
                 face_gray = gray[y: y + h, x: x + w]
                 face = adjust.adjust(face,1.1,Kf)
                 frame = cv2.blur(frame,(2,2))
                 dst = cv2.bilateralFilter(face, Kf, sigmaColor=1.2*(Kf+70), sigmaSpace=1.2*(Kf+20))
-                frame[y:y + h,x: x + w] = dst
+                frame[y:y + h,x: x + w] = dst#美肌処理を施した顔を全体の画像に貼り付ける
     return frame,before
 
 def ChangeValueTrackbar(position):
