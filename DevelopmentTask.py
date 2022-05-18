@@ -70,14 +70,34 @@ while(1):
         cv2.imwrite(""+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')+"_before.png",before)
     elif key == ord('g'):
         ChangeGrayFrame = not ChangeGrayFrame
+        ChangeMosaicFrame = False
+        ChangeBinaryFrame = False
+        ChangeAvatarFrame = False
+        ChangeHSVFrame = False
     elif key == ord('b'):
         ChangeBinaryFrame = not ChangeBinaryFrame
+        ChangeMosaicFrame = False
+        ChangeGrayFrame = False
+        ChangeAvatarFrame = False
+        ChangeHSVFrame = False
     elif key == ord('a'):
         ChangeAvatarFrame = not ChangeAvatarFrame
+        ChangeMosaicFrame = False
+        ChangeGrayFrame = False
+        ChangeBinaryFrame = False
+        ChangeHSVFrame = False
     elif key == ord('h'):
         ChangeHSVFrame = not ChangeHSVFrame
+        ChangeMosaicFrame = False
+        ChangeGrayFrame = False
+        ChangeBinaryFrame = False
+        ChangeAvatarFrame = False
     elif key == ord('m'):
         ChangeMosaicFrame = not ChangeMosaicFrame
+        ChangeGrayFrame = False
+        ChangeBinaryFrame = False
+        ChangeAvatarFrame = False
+        ChangeHSVFrame = False
         
 cv2.destroyAllWindows()
 cap.release()
