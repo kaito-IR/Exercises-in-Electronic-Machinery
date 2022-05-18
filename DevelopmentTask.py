@@ -2,11 +2,11 @@ import cv2
 import adjust
 import datetime
 adjust = adjust.adjust()
-face_cascade_path = 'haarcascade_frontalface_default.xml'
+face_cascade_path = 'haarcascade_frontalface_default.xml'#顔認識のためのデータの読み込み
 face_cascade = cv2.CascadeClassifier(face_cascade_path)
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 5)
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));#動作の軽量化のためカメラの設定を変更
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 7)#処理落ち軽減のため
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 Kf = 30
