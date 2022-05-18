@@ -21,6 +21,7 @@ ChangeMosaicFrame = False
 def BeautifulSkinFilter():
     ret,frame = cap.read()
     frame = cv2.resize(frame,dsize=(int(width/2),int(height/2)))
+    before = frame.copy()
     # バイラテラルフィルタ
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
@@ -46,7 +47,7 @@ def BeautifulSkinFilter():
                 frame = cv2.blur(frame,(2,2))
                 dst = cv2.bilateralFilter(face, Kf, sigmaColor=1.2*(Kf+70), sigmaSpace=1.2*(Kf+20))
                 frame[y:y + h,x: x + w] = dst
-    return frame
+    return frame,before
 
 def ChangeValueTrackbar(position):
     global Kf
@@ -58,14 +59,15 @@ cv2.namedWindow("after")
 cv2.createTrackbar("FilterStrength","after",Kf,Kf_Max,ChangeValueTrackbar)
 while(1):
     # バイラテラルフィルタ
-    frame = BeautifulSkinFilter()
+    frame,before = BeautifulSkinFilter()
     cv2.imshow("after",frame)
     key = cv2.waitKey(1)
     if key == 27:#escキーが押された時
         break
     elif key == ord('s'):
         dt_now = datetime.datetime.now()
-        cv2.imwrite(""+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')+".png",frame)
+        cv2.imwrite(""+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')+"_after.png",frame)
+        cv2.imwrite(""+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')+"_before.png",before)
     elif key == ord('g'):
         ChangeGrayFrame = not ChangeGrayFrame
     elif key == ord('b'):

@@ -8,6 +8,6 @@ cv2.imshow("Before",img)
 #BlurImg = cv2.GaussianBlur(img,(3,3),0)
 #dst = cv2.bilateralFilter(BlurImg, 30, sigmaColor=80, sigmaSpace=80)#sigmaColorは大きくしすぎない
 #cv2.imshow("BlurAfter",dst)
-dst = cv2.bilateralFilter(img, 30, sigmaColor=80, sigmaSpace=80)#sigmaColorは大きくしすぎない
+dst = cv2.bilateralFilter(img, 30, sigmaColor=120, sigmaSpace=60)#sigmaColorは大きくしすぎない
 cv2.imshow("NotBlurAfter",dst)
 cv2.waitKey(0)
