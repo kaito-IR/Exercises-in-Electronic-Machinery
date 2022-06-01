@@ -39,7 +39,7 @@ while cap.isOpened():
     # フレーム間差分を計算
     mask = FSub.frame_sub(Grays[0], Grays[1], Grays[2], th=30)
     Moment = cv2.countNonZero(mask)#白い部分のピクセル数を検出
-    print(Moment)
+    #print(Moment)
     #print(time.perf_counter() - DetectionWaitTime)
     if Moment > DetectionMoment and (time.perf_counter() - DetectionWaitTime >= 20.0 or DetectionWaitTime == 0):#白い部分のピクセル数が閾値を超え，かつクールタイムが終了していれば動体を検知
         video_buf = cv2.VideoWriter('./不審映像.mp4',fourcc,fps,(int(width/2), int(height/2)))
@@ -101,4 +101,3 @@ msg.attach(attachment)
 server.send_message(msg)#メール送信(結構重い処理なのか数秒動作が止まる)
 server.quit()
 cv2.destroyAllWindows()
-subprocess.run(["sudo","rm","*.mp4"],shell=True,input="Kaito0416")
