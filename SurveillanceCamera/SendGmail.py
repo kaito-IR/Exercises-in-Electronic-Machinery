@@ -6,9 +6,7 @@ import smtplib
 class SendGmail:
     def __init__(self,account,password):
         # SMTP認証情報
-        #self.account = "hugahugatarou@gmail.com"
         self.account = account
-        #self.password = "olrlnxqhlidabpke"
         self.password = password
         
         # 送受信先
@@ -32,7 +30,6 @@ class SendGmail:
         msg.attach(body)
         if AttachFileName != "" and AttachFilePass != "" and FileType != "" and FileExtension != "":
             attach_file = {'name': AttachFileName, 'path': AttachFilePass}
-            #attachment = MIMEBase('video', 'mp4')
             attachment = MIMEBase(FileType, FileExtension)
             file = open(attach_file['path'], 'rb+')
             attachment.set_payload(file.read())

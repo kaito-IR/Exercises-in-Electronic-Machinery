@@ -14,7 +14,6 @@ class frame_sub:
         # 二値化処理
         diff[diff < th] = 0
         diff[diff >= th] = 255
-        #ret,diff = cv2.threshold(diff,th,255,cv2.THRESH_OTSU)
         # メディアンフィルタ処理（ゴマ塩ノイズ除去）
         mask = cv2.medianBlur(diff, 3)
 
