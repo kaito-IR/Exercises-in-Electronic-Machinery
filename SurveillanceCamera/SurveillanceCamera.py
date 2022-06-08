@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 import cv2
-import numpy as np
 import time
-import smtplib
 import subprocess
-import FrameSub
 import datetime
-from email import encoders
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
+import FrameSub
+import SendGmail
 
 FSub = FrameSub.frame_sub()#フレーム間差分の計算クラスを読み込み
+Gmail = SendGmail.SendGmail("hugahugatarou@gmail.com","olrlnxqhlidabpke")
 
 # 動画ファイルのキャプチャ
 cap = cv2.VideoCapture(0)
@@ -44,6 +40,7 @@ while cap.isOpened():
         video_buf = cv2.VideoWriter('./不審映像.mp4',fourcc,fps,(int(width/2), int(height/2)))#不審映像の録画を開始
         DetectionWaitTime = time.perf_counter()#時間を更新し連続検知を避ける
         PopenProcess = True#不審映像の録画フラグを立てる
+        print("録画開始")
     if time.perf_counter() - DetectionWaitTime >= 15.0 and PopenProcess:#不審映像の録画開始から15秒経過したら不審映像を送信するプログラムを実行(並列処理なので送信待ちしない)
         video_buf.release()
         cap.release()#不審映像の録画終了のため，一旦カメラを停止
@@ -76,32 +73,6 @@ if 'video_buf' in globals() or 'video_buf' in locals():
     video_buf.release()
 cap.release()
 #動作終了時に全体の監視映像を送信
-# SMTP認証情報
-account = "hugahugatarou@gmail.com"
-password = "olrlnxqhlidabpke"
- 
-# 送受信先
-to_email = account
-from_email = account
-
-#メールのフォーマットの定義とメールアカウントへのログイン
-server = smtplib.SMTP("smtp.gmail.com", 587)
-server.starttls()
-server.login(account, password)
-msg = MIMEMultipart()#送信メールの作成
-msg["Subject"] = "動作終了"
-msg["To"] = to_email
-msg["From"] = from_email 
-body = MIMEText("監視カメラをシャットダウンしました．録画した映像はこちらになります．")
-msg.attach(body)
-attach_file = {'name': "監視映像.mp4", 'path': './監視映像.mp4'} # nameは添付ファイル名。pathは添付ファイルの位置を指定
-attachment = MIMEBase('video', 'mp4')
-file = open(attach_file['path'], 'rb+')
-attachment.set_payload(file.read())
-file.close()
-encoders.encode_base64(attachment)
-attachment.add_header("Content-Disposition", "attachment", filename=attach_file['name'])
-msg.attach(attachment)
-server.send_message(msg)#メール送信(結構重い処理なのか数秒動作が止まる)
-server.quit()
+Gmail.SendMsg("動作終了","監視カメラをシャットダウンしました．録画した映像はこちらになります．", "監視映像.mp4",'./監視映像.mp4','video','mp4')
+del Gmail
 cv2.destroyAllWindows()
