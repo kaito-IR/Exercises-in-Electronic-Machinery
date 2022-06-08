@@ -1,5 +1,3 @@
-import cv2
-import time
 from email import encoders
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -35,5 +33,5 @@ file.close()
 encoders.encode_base64(attachment)
 attachment.add_header("Content-Disposition", "attachment", filename=attach_file['name'])
 msg.attach(attachment)
-server.send_message(msg)#メール送信(結構重い処理なのか数秒動作が止まる)
+server.send_message(msg)#メール送信
 print("送信完了")

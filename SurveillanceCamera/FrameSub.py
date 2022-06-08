@@ -1,5 +1,4 @@
 import cv2
-import time
 # フレーム差分の計算
 class frame_sub:
     def __init__(self):
