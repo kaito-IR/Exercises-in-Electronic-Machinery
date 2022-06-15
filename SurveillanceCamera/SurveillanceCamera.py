@@ -73,6 +73,6 @@ if 'video_buf' in globals() or 'video_buf' in locals():
     video_buf.release()
 cap.release()
 #動作終了時に全体の監視映像を送信
-Gmail.SendMsg("動作終了","監視カメラをシャットダウンしました．録画した映像はこちらになります．", "監視映像.mp4",'./監視映像.mp4','video','mp4')
+Gmail.SendMsg_AttachVideo("動作終了","監視カメラをシャットダウンしました．録画した映像はこちらになります．", "監視映像.mp4",'./監視映像.mp4')
 del Gmail
 cv2.destroyAllWindows()
