@@ -17,10 +17,10 @@ height = int(height)
 fingerNo = 8#fingerNo4:親指,fingerNo8:人差し指,fingerNo12:中指,fingerNo16:薬指,fingerNo20:小指
 img = np.full((height,width,3),255,np.uint8)
 cv2.namedWindow('Camera')
-cv2.createTrackbar('B','Camera',0,255,nothing)
+cv2.createTrackbar('B','Camera',255,255,nothing)
 cv2.createTrackbar('G','Camera',0,255,nothing)
-cv2.createTrackbar('R','Camera',0,255,nothing)
-cv2.createTrackbar('Size','Camera',1,30,nothing)
+cv2.createTrackbar('R','Camera',255,255,nothing)
+cv2.createTrackbar('Size','Camera',30,60,nothing)
 
 Draw = True
 
