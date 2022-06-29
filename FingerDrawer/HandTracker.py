@@ -32,9 +32,7 @@ class handTracker():
                 cx,cy = int(lm.x*w), int(lm.y*h)
                 lmlist.append([id,cx,cy])
             if draw:
-                cv2.circle(image,(lmlist[fingerNo][1],lmlist[fingerNo][2]), 15 , (255,0,255), cv2.FILLED)
-                for i in range(4,21,4):
-                   cv2.putText(image,str(int(lmlist[i][0]/4)),(lmlist[i][1],lmlist[i][2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,0),2)
+                cv2.circle(image,(lmlist[fingerNo][1],lmlist[fingerNo][2]), 15 , (255,255,255), cv2.FILLED)
                 #for list in lmlist:
                 #   cv2.putText(image,str(list[0]),(list[1],list[2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,255),2)
 
