@@ -7,10 +7,11 @@ hand = HandTracker.handTracker()
 
 def main():#メイン関数．基本的な処理は全部ここでやる
     global FingersPos_old
+    global DoubleHand
     ret,frame = cap.read()
     #frame = cv2.resize(frame,dsize=(width,height))#処理軽減のため画像のサイズを半分に
     frame = hand.handsFinder(frame)
-    lmList = hand.positionFinder(frame,fingerNo)
+    lmList = hand.positionFinder(frame)
     Blue = cv2.getTrackbarPos("B","Camera")#トラックバーの値を取得
     Green = cv2.getTrackbarPos("G","Camera")
     Red = cv2.getTrackbarPos("R","Camera")
@@ -20,25 +21,40 @@ def main():#メイン関数．基本的な処理は全部ここでやる
     Fps = cap.get(cv2.CAP_PROP_FPS)
     if len(lmList) != 0 and Size != 0:
         if Draw:#描画フラグが立ってれば描画
+            if len(lmList) < 42:
+                if DoubleHand:
+                    FingersPos_old = [[],[],[],[],[],[],[],[],[],[]]
+                DoubleHand = False
+            else:
+                DoubleHand = True
+                
             if AllFingersDraw:
-                for i in range(4,21,4):
+                for i in range(4,len(lmList),4):
+                    if i > 20:
+                        i = i + 1
                     cor = FingersColor[int(i/4-1)]
-                    if len(FingersPos_old[int(i/4-1)]) == 0:
+                    cv2.circle(frame,(lmList[i][1],lmList[i][2]), 15 , (255,255,255), cv2.FILLED)
+                    if len(FingersPos_old[int(i/4-1)]) == 0 or FingersPos_old[int(i/4-1)][0] == 0:
                         cv2.circle(img,(lmList[i][1],lmList[i][2]),int(Size/2),cor,-1)
                     else:
                         cv2.line(img,FingersPos_old[int(i/4-1)],(lmList[i][1],lmList[i][2]),cor,Size)
             else:
-                if len(FingersPos_old[int(fingerNo/4-1)]) == 0:
+                cv2.circle(frame,(lmList[fingerNo][1],lmList[fingerNo][2]), 15 , (255,255,255), cv2.FILLED)
+                if len(FingersPos_old[int(fingerNo/4-1)]) == 0 or FingersPos_old[int(fingerNo/4-1)][0] == 0:
                     cv2.circle(img,(lmList[fingerNo][1],lmList[fingerNo][2]),int(Size/2),cor,-1)
                 else:
                     #丸だと綺麗に軌跡を描けないので，前回認識時の座標を記録し，その座標と今の座標との間を直線で結ぶことで軌跡を描く
                     cv2.line(img,FingersPos_old[int(fingerNo/4-1)],(lmList[fingerNo][1],lmList[fingerNo][2]),cor,Size)
         
-        FingersPos_old[int(fingerNo/4-1)] = [lmList[fingerNo][1],lmList[fingerNo][2]]#座標を記録
-        for i in range(4,21,4):
+        if len(lmList) < 42:
+            for i in range(22):
+                lmList.append([0,0,0])
+        for i in range(4,42,4):
+            if i > 20:
+                i = i + 1
             FingersPos_old[int(i/4-1)] = [lmList[i][1],lmList[i][2]]#座標を記録
     else:#手を認識出来なかったら記録した座標を初期化
-        FingersPos_old = [[],[],[],[],[]]
+        FingersPos_old = [[],[],[],[],[],[],[],[],[],[]]
         
     frame = cv2.bitwise_and(frame,img)#カメラの映像とキャンパスの映像を合体
     frame = cv2.flip(frame,1)
@@ -51,10 +67,12 @@ def main():#メイン関数．基本的な処理は全部ここでやる
     cv2.rectangle(frame,(0,CursorPos-30),(120,CursorPos),(0,0,0),2)#カーソル表示
     
     if len(lmList) != 0:
-        for i in range(4,21,4):
+        for i in range(4,len(lmList),4):
+            if i > 20:
+                i = i + 1
             x = width - lmList[i][1]
             y = lmList[i][2]
-            cv2.putText(frame,str(int(lmList[i][0]/4)),(x,y),cv2.FONT_HERSHEY_SIMPLEX,2.0,FingersColor[int(i/4-1)],2)
+            cv2.putText(frame,str(int(i/4)),(x,y),cv2.FONT_HERSHEY_SIMPLEX,2.0,FingersColor[int(i/4-1)],2)
             
     cv2.imshow('Camera', frame)
     #cv2.imshow('Canvas',img)
@@ -109,9 +127,10 @@ cv2.createTrackbar('G','Camera',255,255,ChangeGreen)
 cv2.createTrackbar('R','Camera',0,255,ChangeRed)
 cv2.createTrackbar('Size','Camera',30,90,ChangeSize)#ペンのサイズを変更するトラックバーを表示
 Draw = True
+DoubleHand = False
 AllFingersDraw = False
-FingersColor = [[255,0,0],[0,255,0],[0,0,255],[255,0,255],[255,255,0]]
-FingersPos_old = [[],[],[],[],[]]
+FingersColor = [[255,0,0],[0,255,0],[0,0,255],[255,0,255],[255,255,0],[128,128,128],[128,128,0],[128,0,0],[0,128,0],[0,0,128]]
+FingersPos_old = [[],[],[],[],[],[],[],[],[],[]]
 CursorPos = 35
 
 while True:

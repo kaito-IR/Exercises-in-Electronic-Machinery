@@ -23,18 +23,32 @@ class handTracker():
                     self.mpDraw.draw_landmarks(image, handLms, self.mpHands.HAND_CONNECTIONS)
         return image
 
-    def positionFinder(self,image,fingerNo,handNo=0, draw=True):
+    def positionFinder(self,image):
         lmlist = []
         if self.results.multi_hand_landmarks:
-            Hand = self.results.multi_hand_landmarks[handNo]
-            for id, lm in enumerate(Hand.landmark):
-                h,w,c = image.shape
-                cx,cy = int(lm.x*w), int(lm.y*h)
-                lmlist.append([id,cx,cy])
-            if draw:
-                cv2.circle(image,(lmlist[fingerNo][1],lmlist[fingerNo][2]), 15 , (255,255,255), cv2.FILLED)
-                #for list in lmlist:
-                #   cv2.putText(image,str(list[0]),(list[1],list[2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,255),2)
+            if len(self.results.multi_hand_landmarks) > 1:
+                LeftHand = self.results.multi_hand_landmarks[0]
+                RightHand = self.results.multi_hand_landmarks[1]
+                for id, lm in enumerate(RightHand.landmark):
+                    h,w,c = image.shape
+                    cx,cy = int(lm.x*w), int(lm.y*h)
+                    lmlist.append([id,cx,cy])
+                    #for list in lmlist:
+                    #   cv2.putText(image,str(list[0]),(list[1],list[2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,255),2)
+                for id, lm in enumerate(LeftHand.landmark):
+                    h,w,c = image.shape
+                    cx,cy = int(lm.x*w), int(lm.y*h)
+                    lmlist.append([id,cx,cy])
+                    #for list in lmlist:
+                    #   cv2.putText(image,str(list[0]),(list[1],list[2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,255),2)
+            else:
+                Hand = self.results.multi_hand_landmarks[0]
+                for id, lm in enumerate(Hand.landmark):
+                    h,w,c = image.shape
+                    cx,cy = int(lm.x*w), int(lm.y*h)
+                    lmlist.append([id,cx,cy])
+                    #for list in lmlist:
+                    #   cv2.putText(image,str(list[0]),(list[1],list[2]),cv2.FONT_HERSHEY_SIMPLEX,2.0,(0,0,255),2)
 
         return lmlist
 
